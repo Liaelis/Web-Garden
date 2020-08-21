@@ -1,0 +1,411 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="utf-8">
+    <title>WebGarden</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="resources/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="resources/css/stylef.css" rel="stylesheet">
+    <link href="resources/color/default.css" rel="stylesheet">
+    <link rel="shortcut icon" href="resources/img/fivicon.ico">
+    <!-- =======================================================
+        Theme Name: Web garden
+        Author: Elis Regina Scherer (Lia)
+        ======================================================= -->
+</head>
+
+<body>
+<!-- navbar -->
+<div class="navbar-wrapper">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <!-- Responsive navbar -->
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                        class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a>
+                <a href="/logout"><img src="resources/img/slogan.png"></a>
+                <!-- navigation -->
+                <nav class="pull-right nav-collapse collapse">
+                    <ul id="menu-main" class="nav">
+                        <li><a title="Usuario" href="/testauser"> Área Restrita</a></li>
+                        <li><a title="Meus Dados" href="/dadosuser" th:text="${usuario.nome}"><i class="icon-user"></i></a>
+                        </li>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <button type="submit">Sair</button>
+                            </form>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header area -->
+<div id="header-wrapper" class="header">
+    <header class="clearfix">
+        <h3><strong>Área Restrita</strong></h3>
+    </header>
+</div>
+<div class="container">
+    <div class="row">
+        <section id="maincontent" class="inner">
+            <div class="container">
+                <div class="tabbable">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#bemvindo" data-toggle="tab"><i class="icon-edit"></i> Bem Vindo</a>
+                        </li>
+                        <li><a href="#meusprojetos" data-toggle="tab"><i class="icon-briefcase"></i> Projetos</a></li>
+                        <li><a href="#buscaatributo" data-toggle="tab"><i class="icon-search"></i> Pesquisar uma Planta
+                            por atributo</a></li>
+
+
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="bemvindo">
+                            <div class="span10" align="justify">
+                                <div class="accordion-inner">
+                                    <h4>Bem Vindo ao Sistema Web Garden</h4>
+
+                                    <p> Fique a vontade para criar quantos projetos desejar,
+                                        adicionar e remover as especies de sua preferencia.
+                                        Se você não quiser buscar especies, nossa listagem completa de plantas, mas sim
+                                        buscar as de seu interesse em especifico, fique a vontade para realizar
+                                        uma busca por atributos, selecione quantos quiser, mas se
+                                        você sabe o nome popular ou cientifico da planta que você
+                                        procura, basta procurar por nome.
+                                        Se você ja tem todas as plantas que necessita no seu projeto,
+                                        vamos finalinzar e gerar o memorial, é só você adicionar os
+                                        preço unitario das plantas e ecolher a forma de plantio, se forem
+                                        isoladas, você deve indicar a quantidade, se for um canteiro você
+                                        deve inserir a área do canteiro, assim o sistema pode gerar a quantidade
+                                        de plantas e valor total do projeto e cada planta.
+                                        <strong>Vamos Projetar Paisagem!</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="meusprojetos">
+                            <h5><i class="icon-briefcase"></i> Criar um Projeto</h5>
+                            <form align="justify" method="POST" th:action="@{/criaprojeto}">
+                                <div class="form-group col-md-12">
+                                    <label for="projeto">Nome do Projeto</label>
+                                    <input type="nome" class="form-control col-md-3" id="projeto" name="nomeprojeto"
+                                           placeholder="Digite o nome do seu projeto">
+                                    <button type="submit" class="btn btn-info btn-rounded btn-small">Criar Projeto
+                                    </button>
+                                </div>
+                            </form>
+                            <div>
+                                <h5><i class="icon-briefcase"></i> Meus Projetos</h5>
+                            </div>
+                            <div class="alert alert-error" th:if="${mens}">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong>Oh Você ainda não tem projetos!</strong> Você criar um projeto no campo acima!.
+                            </div>
+                            <table class="table">
+                                <tbody th:each="projeto : ${project}">
+                                <tr>
+                                    <th width="60%" th:text="${projeto.nomeprojeto}"></th>
+                                    <td><a th:href="@{'/verprojeto'(id=${projeto.id})}"
+                                           class="btn btn-success btn-rounded btn-small"><i class="icon-eye-open"></i>
+                                        Ver</a></td>
+                                    <td><a th:href="@{'/edicaoprojeto'(id=${projeto.id})}"
+                                           class="btn btn-warning btn-rounded btn-small"><i class="icon-pencil"></i>
+                                        Editar</a></td>
+                                    <td><a th:href="@{'/deleteprojeto'(id=${projeto.id})}"
+                                           class="btn btn-danger btn-rounded btn-small"><i class="icon-trash"></i>
+                                        Excluir</a></td>
+                                    <td><a th:href="@{'/vermemorial'(id=${projeto.id})}"
+                                           class="btn btn-primary btn-rounded btn-small"><i class="icon-list-alt"></i>
+                                        Memorial</a></td>
+                                    <td><input type="hidden" th:value="${projeto.id}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane" id="buscanome">
+                            <div class="accordion-inner">
+                                <form align="justify" action="#" class="form-inline">
+
+                                    <div class="form-group col-md-12">
+                                        <label for="nomeprojeto">Nome da Planta</label>
+                                        <input type="nomeprojeto" class="form-control col-md-3" id="nomeprojeto"
+                                               name="nomeprojeto" placeholder="Digite o nome da planta">
+                                        <button type="submit" class="btn btn-info btn-rounded btn-small"><i
+                                                class="icon-search"></i> Buscar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="buscaatributo">
+                            <h4>Selecione os Atributos para Busca</h4>
+
+                            <form method="post" th:object="${atributoPlantaDTO}" th:action="@{/buscar}">
+                                <div class="span3">
+                                    <!-- start: Accordion -->
+                                    <div class="accordion" id="accordion2">
+                                        <div class="accordion-group">
+                                            <div class="accordion-heading">
+                                                <a class="accordion-toggle" data-toggle="collapse"
+                                                   data-parent="#accordion2" href="#collapseOne">
+                                                    <i class="icon-plus"></i></i> Clima</a>
+                                            </div>
+                                            <div id="collapseOne" class="accordion-body collapse in">
+                                                <div class="accordion-inner">
+                                                    <table class="table ">
+                                                        <tbody th:each="clima:${cli}">
+                                                        <tr>
+                                                            <td width="5"><input type="checkbox"
+                                                                                 class="form-check-input" name="climas"
+                                                                                 th:value="${clima.id}"></td>
+                                                            <td><label th:text="${clima.tipoclima}"></label></td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-group">
+                                            <div class="accordion-heading">
+                                                <a class="accordion-toggle" data-toggle="collapse"
+                                                   data-parent="#accordion2" href="#collapseTwo">
+                                                    <i class="icon-plus"></i> Exposição Solar</a>
+                                            </div>
+                                            <div id="collapseTwo" class="accordion-body collapse">
+                                                <div class="accordion-inner">
+                                                    <table class="table">
+                                                        <tbody th:each="exposicaosolar: ${esp}">
+                                                        <tr>
+                                                            <td width="5"><input type="checkbox"
+                                                                                 class="form-check-input"
+                                                                                 name="exposicoes"
+                                                                                 th:value="${exposicaosolar.id}"></td>
+                                                            <td><label
+                                                                    th:text="${exposicaosolar.tipoexposicao}"></label>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-group">
+                                            <div class="accordion-heading">
+                                                <a class="accordion-toggle" data-toggle="collapse"
+                                                   data-parent="#accordion2" href="#collapseThree">
+                                                    <i class="icon-plus"></i> Persistencia Floral/Foliar </a>
+                                            </div>
+                                            <div id="collapseThree" class="accordion-body collapse">
+                                                <div class="accordion-inner">
+                                                    <table class="table">
+                                                        <tbody th:each="persistencia: ${persis}">
+                                                        <tr>
+                                                            <td width="5"><input type="checkbox"
+                                                                                 class="form-check-input"
+                                                                                 name="persistencia"
+                                                                                 th:value="${persistencia.id}"></td>
+                                                            <td><label
+                                                                    th:text="${persistencia.tipopersistencia}"></label>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--end: Accordion -->
+                                </div>
+                                <div class="span3">
+                                    <!-- start: Accordion -->
+                                    <div class="accordion" id="accordion2">
+                                        <div class="accordion-group">
+                                            <div class="accordion-heading">
+                                                <a class="accordion-toggle active" data-toggle="collapse"
+                                                   data-parent="#accordion2" href="#collapseFor">
+                                                    <i class="icon-minus"></i> Categoria Vegetal </a>
+                                            </div>
+                                            <div id="collapseFor" class="accordion-body collapse in">
+                                                <div class="accordion-inner">
+                                                    <table class="table table-striped">
+                                                        <tbody th:each="categoriavegetal: ${categ}">
+                                                        <tr>
+                                                            <td width="5"><input type="checkbox"
+                                                                                 class="form-check-input"
+                                                                                 name="categorias"
+                                                                                 th:value="${categoriavegetal.id}"></td>
+                                                            <td><label th:text="${categoriavegetal.categoria}"></label>
+                                                            </td>
+                                                        </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-group">
+                                            <div class="accordion-heading">
+                                                <a class="accordion-toggle" data-toggle="collapse"
+                                                   data-parent="#accordion2" href="#collapseFive">
+                                                    <i class="icon-plus"></i> Forma da Planta </a>
+                                            </div>
+                                            <div id="collapseFive" class="accordion-body collapse">
+                                                <div class="accordion-inner">
+                                                    <table class="table">
+                                                        <tbody th:each="formadaplanta : ${forma}">
+                                                        <tr>
+                                                            <td width="5"><input type="checkbox"
+                                                                                 class="form-check-input" name="formas"
+                                                                                 th:value="${formadaplanta.id}"></td>
+                                                            <td><label th:text="${formadaplanta.formavegetal}"> </label>
+                                                            </td>
+
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-group">
+                                            <div class="accordion-heading">
+                                                <a class="accordion-toggle" data-toggle="collapse"
+                                                   data-parent="#accordion2" href="#collapseSix">
+                                                    <i class="icon-plus"></i> Cor da Flor </a>
+                                            </div>
+                                            <div id="collapseSix" class="accordion-body collapse">
+                                                <div class="accordion-inner">
+                                                    <table class="table">
+                                                        <tbody th:each="cordaflor :${corflor}">
+                                                        <tr>
+                                                            <td width="5"><input type="checkbox"
+                                                                                 class="form-check-input"
+                                                                                 name="cordasflores"
+                                                                                 th:value="${cordaflor.id}"></td>
+                                                            <td><label th:text="${cordaflor.cor}"></label></td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--end: Accordion -->
+                                </div>
+                                <div class="span3">
+                                    <!-- start: Accordion -->
+                                    <div class="accordion" id="accordion2">
+                                        <div class="accordion-group">
+                                            <div class="accordion-heading">
+                                                <a class="accordion-toggle" data-toggle="collapse"
+                                                   data-parent="#accordion2" href="#collapseSeven">
+                                                    <i class="icon-plus"></i> Cor da Folha </a>
+                                            </div>
+                                            <div id="collapseSeven" class="accordion-body collapse in">
+                                                <div class="accordion-inner">
+                                                    <table class="table">
+                                                        <tbody th:each="cordafolha :${corfolha}">
+                                                        <tr>
+                                                            <td width="5"><input type="checkbox"
+                                                                                 class="form-check-input"
+                                                                                 name="cordasfolhas"
+                                                                                 th:value="${cordafolha.id}"></td>
+                                                            <td><label th:text="${cordafolha.cor}"></label></td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-group">
+                                            <div class="accordion-heading">
+                                                <a class="accordion-toggle" data-toggle="collapse"
+                                                   data-parent="#accordion2" href="#collapse8">
+                                                    <i class="icon-plus"></i> Textura da Folha </a>
+                                            </div>
+                                            <div id="collapse8" class="accordion-body collapse">
+                                                <div class="accordion-inner">
+
+                                                    <table class="table">
+                                                        <tbody th:each="texturafolha : ${txf}">
+                                                        <tr>
+                                                            <td width="5"><input type="checkbox"
+                                                                                 class="form-check-input"
+                                                                                 name="texturasdafolha"
+                                                                                 th:value="${texturafolha.id}"></td>
+                                                            <td><label th:text="${texturafolha.tipotextura}"></label>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-group">
+                                            <div class="accordion-heading">
+                                                <a class="accordion-toggle" data-toggle="collapse"
+                                                   data-parent="#accordion2" href="#collapseNine">
+                                                    <i class="icon-plus"></i> Textura do Tronco </a>
+                                            </div>
+                                            <div id="collapseNine" class="accordion-body collapse">
+                                                <div class="accordion-inner">
+                                                    <table class="table">
+                                                        <tbody th:each=" texturatronco : ${txt}">
+                                                        <tr>
+                                                            <td width="5"><input type="checkbox"
+                                                                                 class="form-check-input"
+                                                                                 name="texturasdotronco"
+                                                                                 th:value="${texturatronco.id}"></td>
+                                                            <td><label th:text="${texturatronco.tipotextura}"></label>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--end: Accordion -->
+                                </div>
+                                &nbsp&nbsp&nbsp&nbsp
+                                <button type="submit" class="btn btn-info btn-rounded btn-small"><i
+                                        class="icon-search"></i> Buscar
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+    </div>
+    <!-- end container -->
+    </section>
+</div>
+</div>
+</body>
+
+<a href="#" class="scrollup"><i class="icon-angle-up icon-square icon-bgdark icon-2x"></i></a>
+<script src="resources/js/jquery.js"></script>
+<script src="resources/js/jquery.scrollTo.js"></script>
+<script src="resources/js/jquery.nav.js"></script>
+<script src="resources/js/jquery.localScroll.js"></script>
+<script src="resources/js/bootstrap.js"></script>
+<script src="resources/js/jquery.prettyPhoto.js"></script>
+<script src="resources/js/isotope.js"></script>
+<script src="resources/js/jquery.flexslider.js"></script>
+<script src="resources/js/inview.js"></script>
+<script src="resources/js/animate.js"></script>
+<script src="resources/js/custom.js"></script>
+<script src="resources/contactform/contactform.js"></script>
+
+</html>

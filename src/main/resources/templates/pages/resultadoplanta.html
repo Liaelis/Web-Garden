@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+	<meta charset="utf-8">
+	<title>WebGarden</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link href="resources/css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="resources/css/stylef.css" rel="stylesheet">
+	<link href="resources/color/default.css" rel="stylesheet">
+	<link rel="shortcut icon" href="resources/img/fivicon.ico">
+<!-- =======================================================
+    Theme Name: Web garden
+    Author: Elis Regina Scherer (Lia)
+	======================================================= -->
+</head>
+
+<body>
+	<!-- navbar -->
+	<div class="navbar-wrapper">
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<!-- Responsive navbar -->
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+				</a>
+					<a href="/logout"><img src="resources/img/slogan.png"></a>
+					<!-- navigation -->
+					<nav class="pull-right nav-collapse collapse">
+						<ul id="menu-main" class="nav">
+							<li><a title="Usuario" href="/testauser" > Área Restrita</a></li>
+							<li><a title="Meus Dados" href="/dadosuser"  th:text ="${usuario.nome}" ><i class="icon-user"></i></a></li>
+							<li>
+								<form th:action="@{/logout}" method="post">
+									<button type="submit">Sair</button>
+								</form>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Header area -->
+	<div id="header-wrapper" class="header">
+		<header class="clearfix">
+			<h3><strong>Área Restrita</strong></h3>
+		</header>
+	</div>
+	<body>
+		<div class="container">
+			<div class="row">
+					<section id="maincontent" class="inner">
+		<div class="container">
+			<div class='divMensagem'>
+				<div id='mensagemAqui'>
+
+				</div>
+				
+			<div class="row">
+					
+				<div class="span10">
+						<h4><i class="icon-leaf"></i> Resultado da Busca </h4><br/>
+					<div class="alert alert-error" th:if="${obj}">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+						<strong>Oh sentimos muito, não encontramos nenhuma planta!</strong> Por favor realize uma nova busca com outros atributos.
+					</div>
+						<div>
+							<table class="table">
+								<tbody th:each="planta:${plant}">
+								<tr>
+									<td><img th:src="*{'data:image/png;base64,'+ planta.foto.base64Encode() }" class="img-responsive" width="80" height="80"> </td>
+									<td><a th:href="@{'/infoplanta'(idplanta=${planta.id})}" th:text="${planta.nomepopular }"></a></td>
+									<td class="nomecient"><a th:href="@{'/infoplanta'(idplanta=${planta.id})}" th:text="${planta.nomecientifico}"></a></td>
+									<td><div class="btn-group show-on-hover">
+										<button type="button" name="salvarnoprojeto" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+											Adicionar ao Projeto <span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu btn-primary" role="menu"  >
+											<ul th:each="projeto:${proj}">
+												<li><strong><h5><a href="#" th:onclick="clica('[(${projeto.id})]','[(${planta.id})]')" th:text="${projeto.nomeprojeto}"></a></h5></strong></li>
+											</ul>
+										</ul>
+									</div></td>
+								</tr>
+								</tbody>
+							</table>
+							<br/><a class="btn btn-info  btn-flat icon-arrow-left" href="/testauser"> Voltar</a>
+						</div>
+						 
+				</div>
+			</div>
+		</div>
+		<!-- end container -->
+	</section>
+			</div>		
+		</div>
+	</body>
+
+	<script>
+		function clica(idprojeto, idplanta) {
+			$.ajax({
+				url:'/salvarplantaemprojeto',
+				type:'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({idprojeto:idprojeto, idplanta:idplanta}),
+				dataType : 'json',
+				error: onErrorVisualizarResumo,
+				success: onSuccessVisualizarResumo,
+			});
+			function onErrorVisualizarResumo() {
+				var mensagem ='<div class="alert alert-error" id="erro" ">\n' +
+						'\t\t\t\t<button type="button" class="close" data-dismiss="alert">&times;</button>\n' +
+						'\t\t\t\t<strong> Ação Negada!</strong> Está planta já existe neste projeto.\n' +
+						'\t\t\t</div>';
+				$('#mensagemAqui').html(mensagem);
+			}
+
+			function onSuccessVisualizarResumo() {
+				var mensagem = '\t<div class="alert alert-success" id="certo">\n' +
+						'\t\t\t\t<button type="button" class="close" id="id"data-dismiss="alert">&times;</button>\n' +
+						'\t\t\t\t<strong> Sucesso!</strong> Planta adicionada ao projeto com sucesso.\n' +
+						'\t\t\t</div>';
+				$('#mensagemAqui').html(mensagem);
+			}
+
+
+		}
+
+	</script>
+	<a href="#" class="scrollup"><i class="icon-angle-up icon-square icon-bgdark icon-2x"></i></a>
+	<script src="resources/js/jquery.js"></script>
+	<script src="resources/js/jquery.scrollTo.js"></script>
+	<script src="resources/js/jquery.nav.js"></script>
+	<script src="resources/js/jquery.localScroll.js"></script>
+	<script src="resources/js/bootstrap.js"></script>
+	<script src="resources/js/jquery.prettyPhoto.js"></script>
+	<script src="resources/js/isotope.js"></script>
+	<script src="resources/js/jquery.flexslider.js"></script>
+	<script src="resources/js/inview.js"></script>
+	<script src="resources/js/animate.js"></script>
+	<script src="resources/js/custom.js"></script>
+	<script src="resources/contactform/contactform.js"></script>
+
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+	<meta charset="utf-8">
+	<title>WebGarden</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link href="resources/css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="resources/css/stylef.css" rel="stylesheet">
+	<link href= "resources/color/default.css" rel="stylesheet">
+	<link rel="shortcut icon" href="resources/img/fivicon.ico">
+	<!-- =======================================================
+        Theme Name: Web garden
+        Author: Elis Regina Scherer (Lia)
+        ======================================================= -->
+</head>
+
+<body>
+<!-- navbar -->
+<div class="navbar-wrapper">
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<!-- Responsive navbar -->
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+				</a>
+				<a href="/logout"><img src="resources/img/slogan.png"></a>
+				<!-- navigation -->
+				<nav class="pull-right nav-collapse collapse">
+					<ul id="menu-main" class="nav">
+						<li><a title="Usuario" href="/testauser" > Área Restrita</a></li>
+						<li><a title="Meus Dados" href="/dadosuser"  th:text ="${usuario.nome}"></a></li>
+						<li>
+							<form th:action="@{/logout}" method="post">
+								<button type="submit">Sair</button>
+							</form>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+</div>
+	<!-- Header area -->
+	<div id="header-wrapper" class="header">
+		<header class="clearfix">
+			<h3><strong>Área Restrita</strong></h3>
+		</header>
+	</div>
+	<body>
+	<section id="maincontent" class="inner">
+		<div class="container">
+			<div th:if="${permi}">
+				<a th:href="@{'/desativar'(idplanta=${planta.id})}"class="btn btn-danger  btn-flat "> Desativar Planta</a>
+			</div>
+			<div class='divMensagem'>
+				<div id='mensagemAqui'>
+
+				</div>
+				<h4> <i class="icon-leaf"></i> Planta</h4>
+			<div class="row">
+				<div class="alert alert-success"th:if="${desativada}">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<strong>Sucesso!</strong> Está planta foi desativada, não estará mais disponivel.
+				</div>
+
+				<div class="btn-group show-on-hover">
+				<button type="button" name="salvarnoprojeto" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+					Adicionar ao Projeto <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu link" role="menu"  >
+					<ul th:each="projeto:${proj}">
+						<li><strong><h5><a href="#" th:onclick="clica('[(${projeto.id})]','[(${planta.id})]')" th:text="${projeto.nomeprojeto}"></a></h5></strong></li>
+					</ul>
+				</ul>
+				</div>
+				<div class="span3">
+					<img th:src="*{'data:image/png;base64,'+ planta.foto.base64Encode() }" class="img-thumbnail">
+
+				</div>
+
+
+				<div class="span6">
+						<h4 th:text="${planta.nomepopular}">
+						</h4>
+						<div>
+							<ul>
+								<li><b>Nome cientifico:</b> <u> <i th:text="${planta.nomecientifico}"></i></u></li>
+								<li><b>Nome Popular:</b> <a th:text="${planta.nomepopular}"></a> </li>
+								<li><b>Altura:</b><a th:text="${planta.altura}"></a></li>
+								<li><b>Diametro:</b> <a th:text="${planta.diametro}"></a></li>
+								<li th:each="categoria : ${planta.categoriavegetals}">
+									<b>Categoria:</b>
+									<a th:text="${categoria.categoria}"></a>
+								</li>
+								<li><b>Persistencia floral/foliar:</b> <a th:text="${planta.persistencia.tipopersistencia}"></a></li>
+								<li th:each="forma : ${planta.formadaplantas}"><b>Forma da Planta:</b>
+								<a th:text="${forma.formavegetal}"> </a> ,
+								</li>
+								<li th:each="cordaflor :${planta.cordaflors}"><b>Cor da Flor:</b>
+									 <a th:text="${cordaflor.cor}">
+
+								</a></li>
+								 <li th:each="cordafolha :${planta.cordafolhas}"><b>Cor da Folha:</b>
+									<a th:text="${cordafolha.cor}">
+								</a></li>
+								 <li th:each="clima:${planta.climas}"><b>Clima:</b>
+									<a th:text="${clima.tipoclima}">
+
+								</a></li>
+								<li th:each="exposicao:${planta.exposicaosolars}"><b>Exposição Solar:</b>
+									<a th:text="${exposicao.tipoexposicao}">
+
+								</a></li>
+								 <li th:each="textura :${planta.texturafolhas}"><b>Textura da folha:</b>
+									<a th:text="${textura.tipotextura}">
+
+								</a></li>
+								<li th:each="textura:${planta.texturatroncos}"><b>Textura da tronco:</b>
+									 <a th:text="${textura.tipotextura}">
+
+								</a></li>
+							</ul>
+						</div>
+						<br/><a href="/testauser" class="btn btn-info btn-flat icon-arrow-left"> Voltar</a>
+				</div>
+			</div>
+		</div>
+		<!-- end container -->
+	</section>
+			</div>		
+	</body>
+<script>
+	function clica(idprojeto, idplanta) {
+		$.ajax({
+			url:'/salvarplantaemprojeto',
+			type:'POST',
+			contentType: 'application/json',
+			data: JSON.stringify({idprojeto:idprojeto, idplanta:idplanta}),
+			dataType : 'json',
+			error: onErrorVisualizarResumo,
+			success: onSuccessVisualizarResumo,
+		});
+		function onErrorVisualizarResumo() {
+			var mensagem ='<div class="alert alert-error" id="erro" ">\n' +
+					'\t\t\t\t<button type="button" class="close" data-dismiss="alert">&times;</button>\n' +
+					'\t\t\t\t<strong> Ação Negada!</strong> Está planta já existe neste projeto.\n' +
+					'\t\t\t</div>';
+			$('#mensagemAqui').html(mensagem);
+		}
+
+		function onSuccessVisualizarResumo() {
+			var mensagem = '\t<div class="alert alert-success" id="certo">\n' +
+					'\t\t\t\t<button type="button" class="close" id="id"data-dismiss="alert">&times;</button>\n' +
+					'\t\t\t\t<strong> Sucesso!</strong> Planta adicionada ao projeto com sucesso.\n' +
+					'\t\t\t</div>';
+			$('#mensagemAqui').html(mensagem);
+		}
+
+
+	}
+
+</script>
+
+	<a href="#" class="scrollup"><i class="icon-angle-up icon-square icon-bgdark icon-2x"></i></a>
+	<script src="resources/js/jquery.js"></script>
+	<script src="resources/js/jquery.scrollTo.js"></script>
+	<script src="resources/js/jquery.nav.js"></script>
+	<script src="resources/js/jquery.localScroll.js"></script>
+	<script src="resources/js/bootstrap.js"></script>
+	<script src="resources/js/jquery.prettyPhoto.js"></script>
+	<script src="resources/js/isotope.js"></script>
+	<script src="resources/js/jquery.flexslider.js"></script>
+	<script src="resources/js/inview.js"></script>
+	<script src="resources/js/animate.js"></script>
+	<script src="resources/js/custom.js"></script>
+	<script src="resources/contactform/contactform.js"></script>
+
+</html>

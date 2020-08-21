@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+	<meta charset="utf-8">
+	<title>WebGarden</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link href="resources/css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="resources/css/stylef.css" rel="stylesheet">
+	<link href="resources/color/default.css" rel="stylesheet">
+	<link rel="shortcut icon" href="resources/img/fivicon.ico">
+<!-- =======================================================
+    Theme Name: Web garden
+    Author: Elis Regina Scherer (Lia)
+	======================================================= -->
+</head>
+
+<body>
+	<!-- navbar -->
+	<div class="navbar-wrapper">
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<!-- Responsive navbar -->
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+				</a>
+					<a href="/"><img src="resources/img/slogan.png"></a>
+					<!-- navigation -->
+					<nav class="pull-right nav-collapse collapse">
+						<ul id="menu-main" class="nav">
+							<li><a title="Sobre" href="/sobre">Sobre Nós</a></li>
+							<li><a title="Cadastro" href="/cadastro">Cadastro</a></li>
+							<li><a title="Login" href="/login">Login</a></li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Header area -->
+	<div id="header-wrapper" class="header">
+	<h3>Dados para Cadastro</h3>
+	<small id="emailHelp" class="form-text text-muted">Seus dados serão mantidos privados.</small>
+	</div>
+	<div th:if="${mensagem}">
+		<div class="alert alert-error" th:if="${!op}">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<strong>Oh algo deu errado!</strong> E-mail já esta em uso.
+		</div>
+		<div class="alert alert-success"th:if="${op}">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<strong>Bem vindo!</strong> Dados cadastrado com sucesso.
+		</div>
+	</div>
+		<div class="container">
+				<div class="row" >
+					<form method="post" class="form-control"th:action="@{/cadastrar}">
+						<div class="accordion-inner">
+								
+							<div class="form-control ">
+									<label for="nome"class="control-label"><h5>Nome de Usuario</h5></label>
+									<input type="nome"  id="nome" name="nome"placeholder="Digite seu nome">
+							</div>
+							<br/>
+							<div class="form-control">
+								<label for="email"class="control-label"><h5>Endereço de E-mail</h5></label>
+								<input type="email"   id="email" aria-describedby="emailHelp" name="email" placeholder="Digite seu email">
+							</div>
+							<br/>
+							<div class=" form-control ">
+								<label for="telefone"class="control-label"><h5>Telefone</h5></label>
+								<input type="telefone"   id="telefone" aria-describedby="emailHelp" name="telefone" placeholder="Digite seu telefone">
+							</div>
+							<br/>
+							<div class="form-control ">
+								<label for="senha" class="control-label"><h5>Senha</h5></label>
+								<input type="password" id="senha"name="senha" placeholder="Digite sua senha">
+							</div></br>
+							<button type="submit" class="btn btn-primary">Cadastrar</button>                                                                                                                                
+							<a href="/" class="btn btn-danger">Cancelar</a>
+						</div>
+					</form>
+				</div>
+		</div>		
+			<!-- end slider -->
+	</body>
+	<a href="#" class="scrollup"><i class="icon-angle-up icon-square icon-bgdark icon-2x"></i></a>
+	<script src="resources/js/jquery.js"></script>
+	<script src="resources/js/jquery.scrollTo.js"></script>
+	<script src="resources/js/jquery.nav.js"></script>
+	<script src="resources/js/jquery.localScroll.js"></script>
+	<script src="resources/js/bootstrap.js"></script>
+	<script src="resources/js/jquery.prettyPhoto.js"></script>
+	<script src="resources/js/isotope.js"></script>
+	<script src="resources/js/jquery.flexslider.js"></script>
+	<script src="resources/js/inview.js"></script>
+	<script src="resources/js/animate.js"></script>
+	<script src="resources/js/custom.js"></script>
+	<script src="resources/contactform/contactform.js"></script>
+
+</html>
